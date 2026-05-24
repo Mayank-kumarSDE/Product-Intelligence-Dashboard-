@@ -1,38 +1,67 @@
+# render.yaml – Deploy Quantacus to Render
 services:
-  - type: web
-    name: quantacus-api
-    runtime: node
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm run start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: FRONTEND_URL
-        sync: false
-      - key: DATABASE_URL
-        sync: false
-      - key: REDIS_URL
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_MODEL
-        value: gpt-4o
+  - type: postgresql
+    name: quantacus-db
+    plan: starter
+    database_name: quantacus
+    user: quantacus_user
+    password: ${POSTGRES_PASSWORD}
+    version: "15"
 
-  - type: worker
+  - type: redis
+    name: quantacus-redis
+    plan: starter
+    ip: ${REDIS_HOST}
+    password: ${REDIS_PASSWORD}
+    version: "7"
+
+  - type: web
+    name: quantacus-backend
+    env: node
+    plan: starter
+    buildCommand: |
+      npm ci
+      npm run db:sync
+    startCommand: npm start
+    envVars:
+      NODE_ENV: production
+      PORT: 8080
+      FRONTEND_URL: https://quantacus-frontend.onrender.com
+      DATABASE_URL: postgresql://quantacus_user:${POSTGRES_PASSWORD}@quantacus-db:5432/quantacus
+      REDIS_URL: redis://:${REDIS_PASSWORD}@quantacus-redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: gpt-4o
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: 7d
+    healthCheckPath: /health
+    autoDeploy: true
+
+  - type: background
     name: quantacus-worker
-    runtime: node
-    rootDir: backend
-    buildCommand: npm install
+    env: node
+    plan: starter
+    buildCommand: npm ci
     startCommand: npm run worker
     envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DATABASE_URL
-        sync: false
-      - key: REDIS_URL
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_MODEL
-        value: gpt-4o
+      NODE_ENV: production
+      DATABASE_URL: postgresql://quantacus_user:${POSTGRES_PASSWORD}@quantacus-db:5432/quantacus
+      REDIS_URL: redis://:${REDIS_PASSWORD}@quantacus-redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: gpt-4o
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: 7d
+
+  - type: web
+    name: quantacus-frontend
+    env: node
+    plan: starter
+    buildCommand: |
+      npm ci
+      npm run build
+    startCommand: npm start
+    envVars:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: https://quantacus-backend.onrender.com
+      FRONTEND_URL: https://quantacus-frontend.onrender.com
+    healthCheckPath: /
+    autoDeploy: true
