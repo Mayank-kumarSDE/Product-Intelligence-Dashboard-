@@ -1,20 +1,20 @@
 databases:
   - name: quantacus-db
-    plan: starter
+    plan: free
     databaseName: quantacus
     user: quantacus_user
 
 services:
   - type: redis
     name: quantacus-redis
-    plan: starter
+    plan: free
     maxmemoryPolicy: noeviction
     ipAllowList: []
 
   - type: web
     name: quantacus-backend
     env: node
-    plan: starter
+    plan: free
     rootDir: backend
     buildCommand: npm ci && npm run db:sync
     startCommand: npm start
@@ -51,39 +51,10 @@ services:
       - key: NOTIFICATION_FROM
         value: "Quantacus <no-reply@quantacus.local>"
 
-  - type: worker
-    name: quantacus-worker
-    env: node
-    plan: starter
-    rootDir: backend
-    buildCommand: npm ci
-    startCommand: npm run worker
-    autoDeploy: true
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DATABASE_URL
-        fromDatabase:
-          name: quantacus-db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: quantacus-redis
-          type: redis
-          property: connectionString
-      - key: JWT_SECRET
-        sync: false
-      - key: JWT_EXPIRES_IN
-        value: 7d
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_MODEL
-        value: gpt-4o
-
   - type: web
     name: quantacus-frontend
     env: node
-    plan: starter
+    plan: free
     rootDir: frontend
     buildCommand: npm ci && npm run build
     startCommand: npm start
@@ -92,5 +63,5 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: NEXT_PUBLIC_API_URL
+      - key: NEXT_PUBLIC_API_URL 
         value: https://quantacus-backend.onrender.com
