@@ -1,18 +1,23 @@
 import { Sequelize } from "sequelize";
-import { env, requireEnv } from "./env.config.js";
+import { env } from "./env.config.js";
 
-requireEnv("DATABASE_URL", env.databaseUrl);
+if (!env.databaseUrl) {
+  throw new Error("DATABASE_URL is missing. Check Render environment variables.");
+}
 
 export const sequelize = new Sequelize(env.databaseUrl, {
   dialect: "postgres",
-  logging: env.nodeEnv === "development" ? false : false,
-  dialectOptions:
-    env.nodeEnv === "production"
-      ? {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false
-          }
-        }
-      : {}
+  logging: false, 
+  dialectOptions: {
+    ssl: env.nodeEnv === "production" ? {
+      require: true,
+      rejectUnauthorized: false 
+    } : false
+  },
+  pool: {
+    max: 5, 
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 });
