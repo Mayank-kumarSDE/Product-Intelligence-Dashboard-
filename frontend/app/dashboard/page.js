@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { AlertTriangle, Boxes, CheckCircle2, UploadCloud, ShieldAlert, Award, FileWarning } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
