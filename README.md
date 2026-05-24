@@ -65,6 +65,8 @@ Open the app at `http://localhost:3000`.
 ```txt
 POST   /api/uploads/video
 POST   /api/uploads/csv
+POST   /api/competitors/upload
+POST   /api/competitors/refresh
 GET    /api/jobs/:id
 GET    /api/dashboard/summary
 GET    /api/products
@@ -74,6 +76,25 @@ POST   /api/products/:id/refresh-prices
 GET    /api/alerts
 PATCH  /api/alerts/:id/read
 ```
+
+## Data Model Summary
+
+- `Product`: SKU, title, enhanced title, price, MRP, brand, category, image URL, inventory, availability, validation status, validation issues, competitor pricing, and alerts.
+- `Job`: upload job workflow with type, progress, total products, error details, and failed row information.
+- `Alert`: issue alerts generated from validation rules and competitor pricing.
+- `CompetitorPrice`: competitor name, price, URL, currency, and captured timestamp for each product.
+
+## Assumptions
+
+- Video extraction is mocked to keep the product flow fast and reliable.
+- Competitor price comparison is simulated and can be updated via CSV upload or price refresh.
+- Title enhancement uses OpenAI only when `OPENAI_API_KEY` is provided.
+- Real email/SMS notifications are not enabled in the minimum implementation, but the alert model supports them.
+
+## UX Enhancements
+
+- Products page supports search, category filters, validation status filters, and alerts-only filtering.
+- Product detail pages support competitor price CSV upload and manual refresh.
 
 ## Deployment Plan
 

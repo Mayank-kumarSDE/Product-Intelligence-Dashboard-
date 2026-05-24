@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { AppShell } from "@/components/AppShell";
 import { api } from "@/lib/api";
 import { RefreshCw, Play, AlertCircle, FileText, CheckCircle2, Loader2, ChevronDown, ChevronUp } from "lucide-react";
@@ -81,8 +81,8 @@ export default function JobsPage() {
                 const failedRows = job.failedRows || [];
 
                 return (
-                  <>
-                    <tr key={job.id} style={{ cursor: "pointer" }} onClick={() => toggleExpand(job.id)}>
+                  <Fragment key={job.id}>
+                    <tr style={{ cursor: "pointer" }} onClick={() => toggleExpand(job.id)}>
                       <td>
                         {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                       </td>
@@ -166,7 +166,7 @@ export default function JobsPage() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
               {jobs.length === 0 && (

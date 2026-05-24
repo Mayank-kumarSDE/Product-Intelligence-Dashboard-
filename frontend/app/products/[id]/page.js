@@ -2,7 +2,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle, Info, Sparkles, Tag, TrendingDown, AlertCircle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { CompetitorPriceUploader } from "@/components/CompetitorPriceUploader";
 import { ProductActions } from "@/components/ProductActions";
+import { EnhanceTitleNow } from "@/components/EnhanceTitleNow";
 import { api } from "@/lib/api";
 
 function getPriceMetrics(price, competitorPrices = []) {
@@ -259,6 +261,8 @@ export default async function ProductDetailPage({ params }) {
         </table>
       </div>
 
+      <CompetitorPriceUploader sku={product.sku} />
+
       {/* AI Enhanced Title suggestions table */}
       <div className="card" style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
@@ -320,9 +324,7 @@ export default async function ProductDetailPage({ params }) {
         ) : (
           <div style={{ textAlign: "center", padding: "24px 0" }}>
             <p className="muted" style={{ marginBottom: 12 }}>No enhanced title has been generated yet for this product.</p>
-            <button className="button" style={{ display: "inline-flex", gap: 8 }}>
-              <Sparkles size={16} /> Enhance Title Now
-            </button>
+              <EnhanceTitleNow productId={product.id} />
           </div>
         )}
       </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FileSpreadsheet, UploadCloud, Video } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { TitleEnhanceToggle } from "@/components/TitleEnhanceToggle";
 import { uploadFile } from "@/lib/api";
 
 export default function UploadPage() {
@@ -42,14 +43,7 @@ export default function UploadPage() {
       {error ? <div className="card badge invalid">{error}</div> : null}
 
       <div className="card" style={{ marginBottom: 16 }}>
-        <label className="actions" style={{ alignItems: "center" }}>
-          <input
-            checked={enhanceTitles}
-            onChange={(event) => setEnhanceTitles(event.target.checked)}
-            type="checkbox"
-          />
-          Enable title enhancement during processing
-        </label>
+        <TitleEnhanceToggle value={enhanceTitles} onChange={setEnhanceTitles} />
       </div>
 
       <div className="grid grid-2">
