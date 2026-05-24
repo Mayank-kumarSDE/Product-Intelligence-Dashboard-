@@ -56,27 +56,19 @@ async function processProductJob(queueJob) {
   }
 }
 
-export const startEmbeddedWorker = async () => {
-  try {
-    await sequelize.authenticate();
-    
-    const worker = new Worker(PRODUCT_QUEUE_NAME, processProductJob, {
-      connection: redisConnection,
-      concurrency: 1 
-    });
+await sequelize.authenticate();
 
-    worker.on("completed", (job) => {
-      console.log(`Queue job ${job.id} completed`);
-    });
+const worker = new Worker(PRODUCT_QUEUE_NAME, processProductJob, {
+  connection: redisConnection,
+  concurrency: 2
+});
 
-    worker.on("failed", (job, error) => {
-      console.error(`Queue job ${job?.id} failed`, error);
-    });
+worker.on("completed", (job) => {
+  console.log(`Queue job ${job.id} completed`);
+});
 
-    console.log("Embedded Product worker started successfully");
-    return worker;
-  } catch (error) {
-    console.error("Failed to start embedded worker:", error);
-    throw error;
-  }
-};
+worker.on("failed", (job, error) => {
+  console.error(`Queue job ${job?.id} failed`, error);
+});
+
+console.log("Product worker started");

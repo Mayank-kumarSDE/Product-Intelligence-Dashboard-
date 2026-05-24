@@ -14,11 +14,6 @@ export const env = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d"
 };
 
-if (env.nodeEnv === "production") {
-  requireEnv("DATABASE_URL", env.databaseUrl);
-  requireEnv("REDIS_URL", env.redisUrl);
-}
-
 export function requireEnv(name, value) {
   if (!value) {
     throw new Error(`Missing required environment variable: ${name}`);

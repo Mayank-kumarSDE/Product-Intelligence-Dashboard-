@@ -5,8 +5,6 @@ import { env } from "./config/env.config.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import { apiRouter } from "./routes/index.js";
 
-import { startEmbeddedWorker } from "./workers/product.worker.js"; 
-
 export const app = express();
 
 app.use(
@@ -24,7 +22,3 @@ app.get("/health", (req, res) => {
 
 app.use("/api", apiRouter);
 app.use(errorMiddleware);
-
-startEmbeddedWorker().catch((err) => {
-  console.error("Critical Failure: Embedded worker could not be started from app.js", err);
-});
