@@ -27,6 +27,10 @@ export const Job = sequelize.define(
     },
     errorMessage: {
       type: DataTypes.TEXT
+    },
+    failedRows: {
+      type: DataTypes.JSONB,
+      defaultValue: []
     }
   },
   {

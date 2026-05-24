@@ -26,3 +26,7 @@ export function findProductById(id) {
 export function updateProduct(id, values) {
   return Product.update(values, { where: { id } });
 }
+
+export function findProductBySku(sku) {
+  return Product.findOne({ where: { sku } });
+}

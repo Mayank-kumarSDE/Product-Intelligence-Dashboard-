@@ -15,7 +15,7 @@ export default async function AlertsPage() {
       <div className="section-title">
         <div>
           <h1>Alerts</h1>
-          <p>In-app notifications generated from validation and competitor pricing.</p>
+          <p>Alerts generated from validation and competitor pricing.</p>
         </div>
       </div>
 

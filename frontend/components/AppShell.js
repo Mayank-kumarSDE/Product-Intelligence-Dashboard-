@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Boxes } from "lucide-react";
+import { LogoutButton } from "./LogoutButton";
 
 export function AppShell({ children }) {
   return (
@@ -16,6 +17,8 @@ export function AppShell({ children }) {
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/products">Products</Link>
           <Link href="/alerts">Alerts</Link>
+          <Link href="/jobs">Jobs History</Link>
+          <LogoutButton />
         </nav>
       </header>
       <main className="main">{children}</main>

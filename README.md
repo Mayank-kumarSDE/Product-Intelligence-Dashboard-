@@ -10,6 +10,7 @@ Product intelligence dashboard for ecommerce sellers. It supports video upload, 
 - BullMQ job tracking with Redis
 - Product validation rules
 - In-app alerts
+- External critical-alert email notifications when SMTP env vars are configured
 - Competitor price refresh logic
 - OpenAI title enhancement when `OPENAI_API_KEY` is configured
 - Deployable frontend/backend split
@@ -111,6 +112,7 @@ DATABASE_URL=
 REDIS_URL=
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o
+JWT_SECRET=
 ```
 
 ## Demo Flow

@@ -14,3 +14,9 @@ export function findJobById(id) {
     order: [[{ model: Product, as: "products" }, "createdAt", "DESC"]]
   });
 }
+
+export function findJobs() {
+  return Job.findAll({
+    order: [["createdAt", "DESC"]]
+  });
+}

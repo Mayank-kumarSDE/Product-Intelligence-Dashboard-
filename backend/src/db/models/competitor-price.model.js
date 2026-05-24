@@ -20,6 +20,10 @@ export const CompetitorPrice = sequelize.define(
     url: {
       type: DataTypes.TEXT
     },
+    currency: {
+      type: DataTypes.STRING,
+      defaultValue: "INR"
+    },
     capturedAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW

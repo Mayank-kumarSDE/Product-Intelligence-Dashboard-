@@ -20,7 +20,11 @@ export function ProductActions({ productId, product }) {
 
   async function run(path, label) {
     setBusy(label);
-    await api(path, { method: "POST" });
+    try {
+      await api(path, { method: "POST" });
+    } catch (err) {
+      alert(err.message || "Action failed");
+    }
     setBusy("");
     router.refresh();
   }

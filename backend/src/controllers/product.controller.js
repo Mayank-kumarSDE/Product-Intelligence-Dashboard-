@@ -34,3 +34,19 @@ export async function updateProductDetails(req, res) {
   const product = await editProduct(req.params.id, req.body);
   return ok(res, product, "Product updated");
 }
+
+export async function getProductIssues(req, res) {
+  const product = await getProduct(req.params.id);
+  if (!product) {
+    return res.status(404).json({ success: false, message: "Product not found" });
+  }
+  return ok(res, product.validationErrors || []);
+}
+
+export async function getProductCompetitorPrices(req, res) {
+  const product = await getProduct(req.params.id);
+  if (!product) {
+    return res.status(404).json({ success: false, message: "Product not found" });
+  }
+  return ok(res, product.competitorPrices || []);
+}

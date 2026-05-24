@@ -1,11 +1,14 @@
-import { createProduct, findProductById, findProducts, updateProduct } from "../repositories/product.repository.js";
+import { createProduct, findProductById, findProducts, updateProduct, findProductBySku } from "../repositories/product.repository.js";
 import { refreshCompetitorPrices } from "./competitor.service.js";
 import { enhanceTitle } from "./title-ai.service.js";
 
 export async function createValidatedProduct(jobId, productInput, options = {}) {
+  const existingProduct = await findProductBySku(productInput.sku);
+  
   const product = await createProduct({
     ...productInput,
     jobId,
+    duplicateSku: Boolean(existingProduct),
     validationStatus: "valid",
     validationErrors: []
   });
@@ -13,8 +16,13 @@ export async function createValidatedProduct(jobId, productInput, options = {}) 
   const pricedProduct = await refreshCompetitorPrices(product);
 
   if (options.enhanceTitle) {
-    const enhancedTitle = await enhanceTitle(pricedProduct);
-    await updateProduct(pricedProduct.id, { enhancedTitle });
+    const aiResult = await enhanceTitle(pricedProduct);
+    await updateProduct(pricedProduct.id, {
+      enhancedTitle: aiResult.enhancedTitle,
+      extractedAttributes: aiResult.extractedAttributes,
+      suggestedKeywords: aiResult.suggestedKeywords,
+      enhancementReason: aiResult.enhancementReason
+    });
     return findProductById(pricedProduct.id);
   }
 
@@ -37,8 +45,13 @@ export async function enhanceProductTitle(id) {
     throw error;
   }
 
-  const enhancedTitle = await enhanceTitle(product);
-  await updateProduct(id, { enhancedTitle });
+  const aiResult = await enhanceTitle(product);
+  await updateProduct(id, {
+    enhancedTitle: aiResult.enhancedTitle,
+    extractedAttributes: aiResult.extractedAttributes,
+    suggestedKeywords: aiResult.suggestedKeywords,
+    enhancementReason: aiResult.enhancementReason
+  });
   return findProductById(id);
 }
 

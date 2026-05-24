@@ -17,15 +17,35 @@ async function processProductJob(queueJob) {
       progress: 25
     });
 
+    const failedRows = [];
+    let processedCount = 0;
+
     for (const [index, product] of extractedProducts.entries()) {
-      await createValidatedProduct(appJobId, product, {
-        enhanceTitle: Boolean(enhanceTitles)
-      });
+      try {
+        await createValidatedProduct(appJobId, product, {
+          enhanceTitle: Boolean(enhanceTitles)
+        });
+        processedCount++;
+      } catch (err) {
+        console.error(`Row ${index + 1} failed during ingestion:`, err);
+        failedRows.push({
+          rowNum: index + 1,
+          sku: product.sku || "N/A",
+          reason: err.message || "Validation/Ingestion error"
+        });
+      }
       const progress = 25 + Math.round(((index + 1) / extractedProducts.length) * 70);
-      await updateJob(appJobId, { progress });
+      await updateJob(appJobId, { progress, failedRows });
     }
 
-    await updateJob(appJobId, { status: "completed", progress: 100 });
+    const finalStatus = processedCount === 0 && extractedProducts.length > 0 ? "failed" : "completed";
+    const errorMessage = failedRows.length > 0 ? `${failedRows.length} rows failed to process.` : null;
+
+    await updateJob(appJobId, {
+      status: finalStatus,
+      errorMessage,
+      progress: 100
+    });
   } catch (error) {
     await updateJob(appJobId, {
       status: "failed",

@@ -13,12 +13,30 @@ export const Product = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false
     },
+    duplicateSku: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    brand: {
+      type: DataTypes.STRING
+    },
     title: {
       type: DataTypes.STRING,
       allowNull: false
     },
     enhancedTitle: {
       type: DataTypes.STRING
+    },
+    extractedAttributes: {
+      type: DataTypes.JSONB,
+      defaultValue: {}
+    },
+    suggestedKeywords: {
+      type: DataTypes.JSONB,
+      defaultValue: []
+    },
+    enhancementReason: {
+      type: DataTypes.TEXT
     },
     description: {
       type: DataTypes.TEXT
@@ -30,9 +48,25 @@ export const Product = sequelize.define(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     },
+    mrp: {
+      type: DataTypes.DECIMAL(10, 2)
+    },
     inventory: {
       type: DataTypes.INTEGER,
       defaultValue: 0
+    },
+    availability: {
+      type: DataTypes.STRING,
+      defaultValue: "in_stock"
+    },
+    color: {
+      type: DataTypes.STRING
+    },
+    size: {
+      type: DataTypes.STRING
+    },
+    material: {
+      type: DataTypes.STRING
     },
     imageUrl: {
       type: DataTypes.TEXT

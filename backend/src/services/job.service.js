@@ -1,4 +1,4 @@
-import { findJobById } from "../repositories/job.repository.js";
+import { findJobById, findJobs } from "../repositories/job.repository.js";
 
 export async function getJob(id) {
   const job = await findJobById(id);
@@ -8,4 +8,8 @@ export async function getJob(id) {
     throw error;
   }
   return job;
+}
+
+export function listJobs() {
+  return findJobs();
 }

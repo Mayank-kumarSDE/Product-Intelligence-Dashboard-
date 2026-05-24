@@ -9,7 +9,9 @@ export const env = {
   databaseUrl: process.env.DATABASE_URL,
   redisUrl: process.env.REDIS_URL || "redis://localhost:6379",
   openaiApiKey: process.env.OPENAI_API_KEY,
-  openaiModel: process.env.OPENAI_MODEL || "gpt-4o"
+  openaiModel: process.env.OPENAI_MODEL || "gpt-4o",
+  jwtSecret: process.env.JWT_SECRET || "local-dev-secret-change-me",
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d"
 };
 
 export function requireEnv(name, value) {
