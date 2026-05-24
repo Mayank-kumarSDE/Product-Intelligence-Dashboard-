@@ -3,6 +3,7 @@ databases:
     plan: free
     databaseName: quantacus
     user: quantacus_user
+    ipAllowList: []  # ✅ Allow all connections (protected by password)
 
 services:
   - type: redis
@@ -16,7 +17,7 @@ services:
     env: node
     plan: free
     rootDir: backend
-    buildCommand: npm ci && npm run db:sync
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /health
     autoDeploy: true
@@ -37,19 +38,13 @@ services:
           type: redis
           property: connectionString
       - key: JWT_SECRET
-        sync: false
+        generateValue: true  # ✅ Auto-generate karo
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: OPENAI_API_KEY
         sync: false
       - key: OPENAI_MODEL
         value: gpt-4o
-      - key: SMTP_HOST
-        value: ""
-      - key: SMTP_PORT
-        value: 587
-      - key: NOTIFICATION_FROM
-        value: "Quantacus <no-reply@quantacus.local>"
 
   - type: web
     name: quantacus-frontend
@@ -63,5 +58,5 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: NEXT_PUBLIC_API_URL 
+      - key: NEXT_PUBLIC_API_URL
         value: https://quantacus-backend.onrender.com

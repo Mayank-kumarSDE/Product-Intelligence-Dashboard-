@@ -10,7 +10,7 @@
     "start": "node src/server.js",
     "worker": "node src/workers/product.worker.js",
     "db:sync": "node src/db/sync.js",
-    "build": "npm install"
+    "build": "npm ci"
   },
   "engines": {
     "node": "20.x"
