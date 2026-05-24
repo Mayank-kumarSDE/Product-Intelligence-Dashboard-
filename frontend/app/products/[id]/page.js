@@ -98,6 +98,13 @@ export default async function ProductDetailPage({ params }) {
           </table>
         </div>
       </div>
+
+      <div style={{ height: 16 }} />
+
+      <div className="card">
+        <h2>Raw Source Data</h2>
+        <pre className="code-block">{JSON.stringify(product.rawData || {}, null, 2)}</pre>
+      </div>
     </AppShell>
   );
 }

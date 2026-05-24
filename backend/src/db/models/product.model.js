@@ -44,6 +44,10 @@ export const Product = sequelize.define(
     validationErrors: {
       type: DataTypes.JSONB,
       defaultValue: []
+    },
+    rawData: {
+      type: DataTypes.JSONB,
+      defaultValue: {}
     }
   },
   {

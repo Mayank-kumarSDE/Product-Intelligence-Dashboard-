@@ -5,6 +5,7 @@ Product intelligence dashboard for ecommerce sellers. It supports video upload, 
 ## What Is Real
 
 - CSV parsing and product creation
+- Flexible CSV header normalization with original row stored in PostgreSQL JSONB
 - PostgreSQL persistence
 - BullMQ job tracking with Redis
 - Product validation rules

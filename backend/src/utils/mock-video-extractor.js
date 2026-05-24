@@ -48,5 +48,13 @@ const sampleProducts = [
 
 export async function extractProductsFromVideoMock() {
   await new Promise((resolve) => setTimeout(resolve, 1800));
-  return sampleProducts;
+  return sampleProducts.map((product) => ({
+    ...product,
+    rawData: {
+      source: "mock_video_extraction",
+      detectedSku: product.sku,
+      detectedTitle: product.title,
+      confidence: 0.86
+    }
+  }));
 }
