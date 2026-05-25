@@ -1,13 +1,21 @@
-import { Worker } from "bullmq";
+import { Worker, Queue } from "bullmq";
 import { PRODUCT_QUEUE_NAME } from "../config/queue.config.js";
 import { redisConnection } from "../config/redis.config.js";
-import { sequelize } from "../db/models/index.js";
+import { sequelize, Job } from "../db/models/index.js";
 import { updateJob } from "../repositories/job.repository.js";
 import { createValidatedProduct } from "../services/product.service.js";
 import { extractProductsFromVideoMock } from "../utils/mock-video-extractor.js";
 
 async function processProductJob(queueJob) {
   const { appJobId, source, products, enhanceTitles } = queueJob.data;
+  
+  // ✅ CHECK IF JOB EXISTS IN DATABASE
+  const dbJob = await Job.findByPk(appJobId);
+  if (!dbJob) {
+    console.error(`❌ Job ${appJobId} not found in database. Removing from queue...`);
+    return; // Skip this job
+  }
+  
   await updateJob(appJobId, { status: "processing", progress: 10 });
 
   try {
@@ -56,7 +64,35 @@ async function processProductJob(queueJob) {
   }
 }
 
+// ✅ FIXED: Queue object se jobs get karo (YE FUNCTION FIX KARO)
+async function cleanOrphanJobs() {
+  try {
+    const queue = new Queue(PRODUCT_QUEUE_NAME, { connection: redisConnection });
+    const jobs = await queue.getJobs(['waiting', 'active', 'delayed', 'failed', 'completed']);
+    
+    console.log(`Checking ${jobs.length} jobs for orphan status...`);
+    
+    let removedCount = 0;
+    for (const job of jobs) {
+      const dbJob = await Job.findByPk(job.data.appJobId);
+      if (!dbJob) {
+        console.log(`Removing orphan job ${job.id} (Job ${job.data.appJobId} not in DB)`);
+        await job.remove();
+        removedCount++;
+      }
+    }
+    
+    console.log(`Removed ${removedCount} orphan jobs`);
+    await queue.close();
+  } catch (err) {
+    console.error("Cleanup failed:", err);
+  }
+}
+
 await sequelize.authenticate();
+
+// ✅ RUN CLEANUP BEFORE STARTING WORKER
+await cleanOrphanJobs();
 
 const worker = new Worker(PRODUCT_QUEUE_NAME, processProductJob, {
   connection: redisConnection,
